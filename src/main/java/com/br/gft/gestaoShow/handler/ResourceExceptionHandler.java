@@ -21,6 +21,7 @@ import com.br.gft.gestaoShow.services.exceptions.UsuarioExistenteException;
 import com.br.gft.gestaoShow.services.exceptions.UsuarioNaoEncontradoException;
 import com.br.gft.gestaoShow.services.exceptions.VendaExistenteException;
 import com.br.gft.gestaoShow.services.exceptions.VendaNaoEncontradoException;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
@@ -171,7 +172,7 @@ public class ResourceExceptionHandler {
 		DetalhesErro erro = new DetalhesErro();
 		
 		erro.setStatus(400l);
-		erro.setTitulo("Favor colocar a data no formato certo utilizando as barras ex: dia/mês/ano.");
+		erro.setTitulo("Favor colocar no formato certo seus dados.");
 		erro.setMensagemDesenvolvedor("http://erros.socialbooks.com/500");
 		erro.setTimestamp(System.currentTimeMillis());
 		
@@ -210,6 +211,25 @@ public class ResourceExceptionHandler {
 		
 		
 	}
+	
+	
+	
+	
+	@ExceptionHandler(JsonParseException.class)
+	public ResponseEntity <DetalhesErro> handlerJsonParseException(JsonParseException e, HttpServletRequest request){
+		
+		DetalhesErro erro = new DetalhesErro();
+		
+		erro.setStatus(400l);
+		erro.setTitulo("Favor colocar o atributo certo.");
+		erro.setMensagemDesenvolvedor("http://erros.socialbooks.com/400");
+		erro.setTimestamp(System.currentTimeMillis());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+		
+		
+	}
+	
 	@ExceptionHandler(JsonMappingException.class)
 	public ResponseEntity <DetalhesErro> handlerJsonMappingException(JsonMappingException e, HttpServletRequest request){
 		
@@ -224,7 +244,6 @@ public class ResourceExceptionHandler {
 		
 		
 	}
-	
 	
 	
 	@ExceptionHandler(DataIntegrityViolationException.class)
